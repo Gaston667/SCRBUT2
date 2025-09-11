@@ -1,0 +1,31 @@
+DIALLO Algassimou Pellel -> TP1
+
+Exercice 1:
+    le gettimeofday  -> stack
+    
+    main -> code segment(Fichier de code)
+    
+    &argc -> [stack]
+
+    &i -> [stack]
+
+    &j -> code segment
+
+    t -> data (variable local ou static)
+
+    m -> c'est le [heap] (le tas utiliser par l'os pour reserver de la memoir)
+
+
+Exercice 2:
+    Le but de l'exercice est de voir ce qui se passe au niveau de la mémoire 
+    d'un processus suivant les différents mode d'allocation. 
+
+    buf.c: 
+        000055f55a78d000   16384   16384   16384 rw---   [ anon ]
+        RSS = 16384 -> toute la mémoire est réellement en RAM Das ce CAS (car c'est remplie avec randomize())
+        [ anon ] = une zone anonyme allouée par le noyau. du coup c'est le tableau buffer[] mis en memoire
+
+
+
+
+
