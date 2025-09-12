@@ -1,0 +1,13 @@
+Exo1: 
+
+Exo2:
+    Voire le programe
+
+Exo3: 
+    Le programme coherence.c a pour objectif de montrer la différence entre la lecture de fichiers avec les appels système bas-niveau (open/read)
+    et la lecture avec les fonctions standard de la bibliothèque C (fopen/fread). Il commence par créer un fichier coherence-test.txt 
+    avec un premier texte, puis lit les 12 premiers caractères. Ensuite, il remplace le contenu du fichier par un nouveau texte et continue à 
+    lire le reste du fichier. La lecture avec syscalls reflète directement les modifications effectuées sur le fichier, car le descripteur e
+    st géré par le noyau, tandis que la lecture avec stdio peut retourner les anciennes données à cause du buffering utilisateur interne. 
+    Ainsi, ce programme illustre comment le buffering et la gestion mémoire diffèrent entre les deux méthodes, 
+    et pourquoi les résultats peuvent ne pas être identiques lorsqu’un fichier est modifié entre deux lectures.
