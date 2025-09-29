@@ -1,0 +1,23 @@
+Exercice 1:
+
+        #include <stdio.h>
+        #include <sys/types.h>
+        #include <sys/wait.h>
+        #include <assert.h>
+        #include <unistd.h>
+        #include <stdlib.h>
+        int main(int argc, char* argv[]){
+            // variable
+            pid_t p= getpid();
+            int n = atoi(argv[1]);
+            printf("%d:debut\n",p);
+            for(int i=n; i >= 0; i--){
+                // Creation du processus
+                printf("%d:%d\n",p, i);
+                sleep(1);
+            }
+            printf("%d:fin\n",p);
+            return 0;
+        }
+        
+    Explication: J'ai rencontrer une dificulté sur le \n car sans lui ça bloque et ça n'affiche que a la fin 

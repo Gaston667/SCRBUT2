@@ -1,0 +1,51 @@
+Exercice 1:
+    Explication:
+        Avec printf :
+            printf utilise un tampon (buffer).
+            Quand on écrit "NON" sans retour à la ligne, le tampon n’est pas vidé.
+            fork copie la mémoire du processus, donc le tampon est dupliqué dans le père et le fils.
+            Les deux processus vident leur tampon à la fin, donc "NON" s’affiche deux fois.
+            Seul le père affiche "OUI\n".
+            Résultat : NONNONOUI
+
+        Avec write :
+            write écrit directement sans tampon.
+            "NON" est affiché immédiatement avant le fork.
+            Donc il n’y a rien à dupliquer dans le tampon.
+            Seul le père affiche "OUI\n".
+            Résultat : NONOUI
+
+Exercice 2
+    Explication:
+        Quand l’ouverture du fichier (open()) est faite avant le fork() :
+            Le père et le fils héritent du même descripteur de fichier.
+            Ils partagent la même position d’écriture.
+            Leurs écritures se suivent dans le fichier en utilisant ce pointeur commun.
+
+        Quand le fork() est fait avant l’ouverture du fichier :
+            Le père et le fils exécutent chacun leur propre open().
+            Ils obtiennent donc deux descripteurs de fichier indépendants.
+            Chaque processus écrit avec sa propre position dans le fichier.
+
+        Le résultat dans le fichier peut être dans n’importe quel ordre, mais il n’y a plus de pointeur partagé.
+
+        Résumé :
+            open avant fork un seul descripteur partagé.
+            fork avant open deux descripteurs distincts.
+
+Exercice3:
+    Explication:
+        Quand on décommente fork(), il y a deux processus :
+        le père et le fils.
+        Les deux continuent l’exécution à partir du même endroit dans le programme donc ils entrent tous les deux dans la boucle while de copie.
+
+        Comme ils partagent les mêmes fichiers ouverts (infd et outfd) :
+        tous les deux lisent dans le fichier source, mais pas forcément de façon ordonnée parfois le père lit avant le fils, parfois le fils avant le pere.
+
+        tous les deux écrivent dans le fichier destination, mais pareil, sans ordre garanti.
+
+        Résultat :
+            il peut y avoir des doublons ex un même octet copié deux fois.
+            il peut y avoir des mélanges les octets écrits dans le désordre.
+            
+        Donc le fichier destination n’est plus une copie fidèle du fichier source il est corrompu.
