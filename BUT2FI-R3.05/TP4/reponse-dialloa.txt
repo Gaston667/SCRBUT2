@@ -1,5 +1,5 @@
 Exercice 1:
-
+    1.
         #include <stdio.h>
         #include <sys/types.h>
         #include <sys/wait.h>
@@ -20,4 +20,50 @@ Exercice 1:
             return 0;
         }
         
-    Explication: J'ai rencontrer une dificulté sur le \n car sans lui ça bloque et ça n'affiche que a la fin 
+        Explication: J'ai rencontrer une dificulté sur le \n car sans lui ça bloque et ça n'affiche que a la fin 
+
+    2.  Complétez parexec.c prend en arguments de ligne de commande un nom de programme prog, 
+        suivi d’une liste arbitrairement longue d’arguments, et il exécute prog en parallèle (dans des processus) 
+        sur chacun des arguments. Autrement dit, ./parexec prog arg1 arg2 ... argN
+
+
+        #include <stdio.h>
+        #include <sys/types.h>
+        #include <sys/wait.h>
+        #include <assert.h>
+        #include <unistd.h>
+        #include <stdlib.h>
+        int main(int argc, char* argv[]){
+            if (argc < 3) {
+                printf("Usage: %s <nombre>\n", argv[0]);
+                return 1;
+            }
+
+            pid_t p= getpid();
+            int nbr_proc = argc - 2;
+
+            for(int i=0; i < nbr_proc; i++){
+                p = fork();
+                if (p == 0)
+                {
+                    execl(argv[1], argv[1], argv[i+2], NULL);
+                    assert(0);
+                }
+            }
+            for (int  i = 0; i < nbr_proc; i++){
+                wait(NULL);        
+            }
+            
+            return 0;
+        }
+
+
+        Explication:  execl prend comme argument le path ver le fichier puis le nom que le processus vas porter 
+                    pour etre identifier, puis les parametre puis NULL
+
+    3. Écrivez une version de paraexec qui prend un argumant supplémentaire N entre prog et
+        arg1 qui indique le nombre maximum d'instances de prog à lancer en parallèle. Lorsque ce nombre 
+        est atteint, parexec doit attendre la fin d'un de ses fils pour en relancer un nouveau.
+
+        
+
