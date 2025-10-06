@@ -1,0 +1,3 @@
+. Envoi de SIGSTOP puis SIGCONT à Pf2
+
+Lorsque le signal SIGSTOP est envoyé à Pf2, ce processus est suspendu : il n’écrit plus dans le tube. Le processus Pf1f1, qui lit en continu, se retrouve alors bloqué sur l’appel système read(), car le tube est vide et read() est bloquant. Dès que le signal SIGCONT est envoyé, Pf2 reprend son exécution et recommence à écrire dans le tube ; Pf1f1 recommence immédiatement à recevoir et afficher les PID. Cela montre que la lecture d’un tube dépend de l’activité de l’écrivain.
