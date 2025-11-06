@@ -1,0 +1,48 @@
+SCR.3.2 TP01 sur le routing 
+
+
+II. Avec une passerelle.
+    1. Les routes a jouter sont 
+
+        Pour le HOST c'est a dire la getway: 
+           voir le question 2
+
+        Pour les pc1-1 et pc1-2 du Segment1:
+            172.16.2.0/24 172.16.1.254
+            172.16.2.0/24 172.16.1.254
+
+        Pour les pc2-1 et pc2-2 du Segment2:
+            ne rien mettre 
+        
+    2. le script de demarage De GW doit inte
+        ip route add 172.16.2.0/24 via 172.16.1.254
+        ip route add 172.16.1.0/24 via 172.16.2.254
+        iptables -t nat -A POSTROUTING -d 172.16.2.0/24 -j SNAT --to-source 172.16.2.254
+
+III. Avec deux passerelles.
+
+    - Toutes les machines de S1 peuvent initier des communications vers toutes les machines de S2. Les machines S1 doivent avoir acces au monde exterieur.
+        les machines de S1 ne voient pas les machines de S3
+         
+        Configuration De A:
+            0.0.0.0/0 172.16.1.254
+
+        Configuration de P1:
+            iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 172.16.2.253
+
+    -  Toutes les machines de S2 peuvent initier des communications vers toutes les machines de S3. Les machines de S2 ne voient pas S1.
+        Les machines S2 doivent avoir acces au monde exterieur
+
+        Configuration de B:
+
+        Configuration de P2:
+        
+        Configuration de P1:
+        Configuration de P1:
+        Configuration de P1:
+        
+
+
+
+
+

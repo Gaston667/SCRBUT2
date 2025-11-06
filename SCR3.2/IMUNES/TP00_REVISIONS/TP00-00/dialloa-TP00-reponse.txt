@@ -1,0 +1,9 @@
+ a)
+    adresse réseau epace adresse de la passerelle qu'on veut atteindre
+ 
+    Configuration pc-3 
+        10.32.0.0/17 10.16.0.254
+
+
+
+    Pour configurer  une passerelle on utilise le editor  ip route add xxxxx/x via xxxxx
