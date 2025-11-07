@@ -40,6 +40,8 @@ node n2 {
 	 ip address 127.0.0.1/8
 	 ipv6 address ::1/128
 	!
+	ip route 172.16.2.0/24 172.16.1.254
+	!
     }
     auto_default_routes enabled
     canvas c0
@@ -61,6 +63,8 @@ node n3 {
 	 type lo
 	 ip address 127.0.0.1/8
 	 ipv6 address ::1/128
+	!
+	ip route 172.16.2.0/24 172.16.1.254
 	!
     }
     auto_default_routes enabled
@@ -133,12 +137,31 @@ node n6 {
 	 ipv6 address ::1/128
 	!
     }
-    auto_default_routes enabled
     canvas c0
     iconcoords {432 72}
-    labelcoords {432 108}
+    labelcoords {434 108}
     interface-peer {eth0 n0}
     interface-peer {eth1 n1}
+    custom-configs {
+        custom-config-id default {
+            custom-command /bin/sh
+            config {
+                ip addr add 127.0.0.1/8 dev lo0
+                ip addr add 172.16.1.254/24 dev eth0
+                ip addr add 172.16.2.254/24 dev eth1
+                ip -6 addr add ::1/128 dev lo0
+                iptables -t nat -A POSTROUTING -d 172.16.2.0/24 -j SNAT --to-source 172.16.2.254
+                
+                
+                
+                rpcbind
+                inetd
+                
+            }
+        }
+    }
+    custom-enabled true
+    custom-selected default
 }
 
 link l0 {
