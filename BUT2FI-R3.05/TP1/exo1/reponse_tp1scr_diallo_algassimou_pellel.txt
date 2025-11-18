@@ -24,6 +24,7 @@ Exercice 2:
         000055f55a78d000   16384   16384   16384 rw---   [ anon ]
         RSS = 16384 -> toute la mémoire est réellement en RAM Das ce CAS (car c'est remplie avec randomize())
         [ anon ] = une zone anonyme allouée par le noyau. du coup c'est le tableau buffer[] mis en memoire
+        
 
 
 
