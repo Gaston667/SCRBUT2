@@ -1,0 +1,151 @@
+SCR.3.2 TP01 sur le routing 
+
+
+II. Avec une passerelle
+
+    1. Routes à ajouter
+
+        Les machines du réseau S1 (172.16.1.0/24) doivent pouvoir atteindre le réseau S2 (172.16.2.0/24)
+        en passant par la passerelle (host1) à l’adresse 172.16.1.254.
+
+        Les machines du réseau S2 ne doivent PAS pouvoir initier de communication vers S1.
+
+        Commandes à exécuter :
+
+        Sur pc1-1 :
+        172.16.2.0/24 172.16.1.254
+
+        Sur pc1-2 :
+        172.16.2.0/24 172.16.1.254
+
+        Sur pc2-1 et pc2-2 :
+            pas de route à ajouter vers S1, car elles ne doivent pas initier la communication
+
+    ---
+
+    2. Script de démarrage de la passerelle (host1)
+       
+        ip addr add 172.16.1.254/24 dev eth0
+        ip addr add 172.16.2.254/24 dev eth1
+        
+
+        # Règles iptables pour contrôler le trafic
+        iptables -t nat -A POSTROUTING -d 172.16.2.0/24 -j SNAT --to-source 172.16.2.254
+
+    ---
+
+    3. Test de connectivité
+        Depuis S1 :
+        sudo himage pc1-1 ping -c 1 172.16.2.2
+        Doit répondre (communication autorisée S1 > S2)
+
+        Depuis S2 :
+        sudo himage pc2-1 ping -c 1 172.16.1.1
+        Doit échouer (bloqué par la politique iptables)
+
+    ---
+
+    4. Résumé du comportement attendu
+        - Les machines du segment S1 peuvent initier des communications vers S2.
+        - Les machines du segment S2 peuvent répondre, mais ne peuvent pas initier de communication vers S1.
+        - Le routage entre les deux réseaux passe exclusivement par la passerelle host1 (172.16.1.254 / 172.16.2.254).
+
+
+III. Avec deux passerelles et NAT
+
+    Topologie :
+        S1 : 172.16.1.0/24
+            A (172.16.1.1)
+            P1 (eth0 : 172.16.1.254)
+
+        S2 : 172.16.2.0/24
+            B (172.16.2.1)
+            P1 (eth1 : 172.16.2.253)
+            P2 (eth0 : 172.16.2.252)
+
+        S3 : 172.16.3.0/24
+            C (172.16.3.1)
+            P2 (eth1 : 172.16.3.251)
+
+        Réseau “monde extérieur” :
+            P2 (eth2 : 10.0.0.250)
+            router1 (eth0 : 10.0.0.1)
+            router1 (eth1 : 4.4.4.4)
+            pc-senart (4.4.8.8)
+
+---
+
+1. Routes à configurer
+
+    Sur A (S1) :
+    0.0.0.0/0 via 172.16.1.254
+
+    Sur B (S2) :
+    0.0.0.0/0 172.16.2.253
+
+    Sur C (S3) :
+    0.0.0.0/0 172.16.3.251
+
+    Sur P1 :
+        ip route add 0.0.0.0/24 via 172.16.2.252
+
+    Sur P2 :
+        ip route add 172.16.1.0/24 via 172.16.2.253
+
+---
+    2. Règles De routing
+        P1: iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 172.16.2.253
+
+        P2:
+            # NAT : S2 -> S3
+            iptables -t nat -A POSTROUTING -s 172.16.2.0/24 -d 172.16.3.0/24 -j SNAT --to-source 172.16.3.251
+
+            # NAT : S1 -> S3 (si S1 communique avec S3 via P1)
+            iptables -t nat -A POSTROUTING -s 172.16.1.0/24 -d 172.16.3.0/24 -j SNAT --to-source 172.16.3.251
+
+            # NAT : S1 -> Internet (autorisé)
+            iptables -t nat -A POSTROUTING -s 172.16.1.0/24 -d 10.0.0.0/8 -j SNAT --to-source 10.0.0.250
+
+            #  Règle de filtrage pour bloquer S2 vers Internet
+            iptables -A FORWARD -s 172.16.2.0/24 -d 10.0.0.0/8 -j DROP
+            
+
+---
+
+4. Tests de connectivité (IMunes)
+
+    # A -> B (doit répondre)
+    sudo himage A ping -c 1 172.16.2.1
+
+    # B -> C (doit répondre)
+    sudo himage B ping -c 1 172.16.3.1
+
+    # A -> C (ne doit PAS répondre)
+    sudo himage A ping -c 1 172.16.3.1
+
+    # B -> Internet (doit répondre)
+    sudo himage B ping -c 1 10.0.0.1
+
+    # C -> Internet (ne doit PAS répondre)
+    sudo himage C ping -c 1 10.0.0.1
+
+
+
+
+
+
+
+
+# NAT : S2 -> S3 (adresse source devient 172.16.3.251)
+iptables -t nat -A POSTROUTING -s 172.16.2.0/24 -d 172.16.3.0/24 -j SNAT --to-source 172.16.3.251
+
+# NAT : S1 -> S3 (au cas où S1 communique avec S3 via P1)
+iptables -t nat -A POSTROUTING -s 172.16.1.0/24 -d 172.16.3.0/24 -j SNAT --to-source 172.16.3.251
+
+# NAT : S1 vers Internet (10.0.0.0/8) → autorisé
+iptables -t nat -A POSTROUTING -s 172.16.1.0/24 -d 10.0.0.0/8 -j SNAT --to-source 10.0.0.250
+
+# Bloquer S2 vers Internet (aucun NAT pour 172.16.2.0/24 → 10.0.0.0/8)
+# Donc on ne met pas de règle SNAT pour S2 → Internet
+
+# NAT : S3 ne doit pas sortir vers le monde (aucune règle pour 172.16.3.0/24)
