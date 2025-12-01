@@ -41,7 +41,6 @@ node n2 {
 	ip route 0.0.0.0/0 172.16.1.254
 	!
     }
-    auto_default_routes enabled
     canvas c0
     iconcoords {48 288}
     labelcoords {48 319}
@@ -141,7 +140,9 @@ node n6 {
                 ip addr add 172.16.2.253/24 dev eth1
                 ip -6 addr add ::1/128 dev lo0
                 
+                ip route add 0.0.0.0/0 via 172.16.2.252
                 iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 172.16.2.253
+                iptables -A FORWARD -s 172.16.1.1 -d 172.16.3.1 -j DROP
                 
                 rpcbind
                 inetd
@@ -176,10 +177,9 @@ node n7 {
 	 ipv6 address ::1/128
 	!
     }
-    auto_default_routes enabled
     canvas c0
-    iconcoords {600 240}
-    labelcoords {600 276}
+    iconcoords {624 192}
+    labelcoords {624 228}
     interface-peer {eth0 n3}
     interface-peer {eth1 n1}
     custom-configs {
@@ -189,11 +189,14 @@ node n7 {
                 ip addr add 127.0.0.1/8 dev lo0
                 ip addr add 172.16.2.252/24 dev eth0
                 ip addr add 172.16.3.251/24 dev eth1
-                ip addr add 10.0.0.250/8 dev eth2
+                ip addr add 45.45.45.254/21 dev eth2
                 ip -6 addr add ::1/128 dev lo0
                 
-                iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 172.16.2.252
-                iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to-source 10.0.0.250
+                ip route add 0.0.0.0/0 via 45.45.45.253
+                
+                iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 172.16.2.251
+                iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to-source 45.45.45.254
+                
                 
                 rpcbind
                 inetd
@@ -201,8 +204,9 @@ node n7 {
             }
         }
     }
-    custom-selected default
     interface-peer {eth2 n10}
+    custom-enabled true
+    custom-selected default
 }
 
 node n9 {
@@ -219,10 +223,9 @@ node n9 {
 	 ip address 127.0.0.1/8
 	 ipv6 address ::1/128
 	!
-	ip route 0.0.0.0/0 4.4.4.4
+	ip route 0.0.0.0/0 37.37.37.254
 	!
     }
-    auto_default_routes enabled
     canvas c0
     iconcoords {96 528}
     labelcoords {96 559}
@@ -360,8 +363,9 @@ node n13 {
 	 ip address 127.0.0.1/8
 	 ipv6 address ::1/128
 	!
+	ip route 0.0.0.0/0 45.45.45.253
+	!
     }
-    auto_default_routes enabled
     canvas c0
     iconcoords {864 336}
     labelcoords {864 372}
@@ -448,6 +452,6 @@ option show {
     hostsAutoAssign no
     grid yes
     iconSize normal
-    zoom 1.0
+    zoom 1.5
 }
 

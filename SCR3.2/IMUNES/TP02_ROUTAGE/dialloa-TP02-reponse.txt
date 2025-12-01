@@ -1,0 +1,147 @@
+DIALLO ALGASSIMOU PELLEL
+tp02 suite du tp01
+
+I.
+
+    (3) Il faut rajouter sur :
+        - GW2 une getway qui pointe ves l'exterieur 45.45.45.254/21
+        - GW1 pour permetre au reseaux S1 davoir acces internet getway = 172.16.2.253 qui pointe vers s2 et qui pointe lui meme vers 45.45.45.254
+
+
+    (4) teste effectuer et tout fonctionne corectement.
+
+    (5) Analyse avec tcpdump:
+        Avec protocle icmp uniquement 
+        pc2:
+            root@pc2:/# tcpdump -i eth0 -vvv -n icmp
+            tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+            13:50:19.417282 IP (tos 0x0, ttl 64, id 54811, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 1, length 64
+            13:50:19.417457 IP (tos 0x0, ttl 61, id 18666, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 1, length 64
+            13:50:20.444247 IP (tos 0x0, ttl 64, id 55694, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 2, length 64
+            13:50:20.444322 IP (tos 0x0, ttl 61, id 19135, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 2, length 64
+            13:50:21.468397 IP (tos 0x0, ttl 64, id 56048, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 3, length 64
+            13:50:21.468542 IP (tos 0x0, ttl 61, id 19570, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 3, length 64
+            13:50:22.492378 IP (tos 0x0, ttl 64, id 56134, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 4, length 64
+            13:50:22.492505 IP (tos 0x0, ttl 61, id 20265, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 4, length 64
+
+
+        pc-senart:
+
+            root@pc-senart:/# tcpdump -i eth0 -vvv -n icmp
+            tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+            13:50:19.417374 IP (tos 0x0, ttl 61, id 54811, offset 0, flags [DF], proto ICMP (1), length 84)
+                45.45.45.254 > 37.37.37.1: ICMP echo request, id 25, seq 1, length 64
+            13:50:19.417397 IP (tos 0x0, (3) Il faut rajouter sur :
+        - GW2 une getway qui pointe ves l'exterieur 45.45.45.254/21
+        - GW1 pour permetre au reseaux S1 davoir acces internet getway = 172.16.2.253 qui pointe vers s2 et qui pointe lui meme vers 45.45.45.254
+
+
+    (4) teste effectuer et tout fonctionne corectement.
+
+    (5) Analyse avec tcpdump:
+        Avec protocle icmp uniquement 
+        pc2:
+            root@pc2:/# tcpdump -i eth0 -vvv -n icmp
+            tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+            13:50:19.417282 IP (tos 0x0, ttl 64, id 54811, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 1, length 64
+            13:50:19.417457 IP (tos 0x0, ttl 61, id 18666, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 1, length 64
+            13:50:20.444247 IP (tos 0x0, ttl 64, id 55694, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 2, length 64
+            13:50:20.444322 IP (tos 0x0, ttl 61, id 19135, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 2, length 64
+            13:50:21.468397 IP (tos 0x0, ttl 64, id 56048, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 3, length 64
+            13:50:21.468542 IP (tos 0x0, ttl 61, id 19570, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 3, length 64
+            13:50:22.492378 IP (tos 0x0, ttl 64, id 56134, offset 0, flags [DF], proto ICMP (1), length 84)
+                172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 4, length 64
+            13:50:22.492505 IP (tos 0x0, ttl 61, id 20265, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 4, length 64
+    ttl 64, id 18666, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 45.45.45.254: ICMP echo reply, id 25, seq 1, length 64
+            13:50:20.444293 IP (tos 0x0, ttl 61, id 55694, offset 0, flags [DF], proto ICMP (1), length 84)
+                45.45.45.254 > 37.37.37.1: ICMP echo request, id 25, seq 2, length 64
+            13:50:20.444302 IP (tos 0x0, ttl 64, id 19135, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 45.45.45.254: ICMP echo reply, id 25, seq 2, length 64
+            13:50:21.468477 IP (tos 0x0, ttl 61, id 56048, offset 0, flags [DF], proto ICMP (1), length 84)
+                45.45.45.254 > 37.37.37.1: ICMP echo request, id 25, seq 3, length 64
+            13:50:21.468498 IP (tos 0x0, ttl 64, id 19570, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 45.45.45.254: ICMP echo reply, id 25, seq 3, length 64
+            13:50:22.492457 IP (tos 0x0, ttl 61, id 56134, offset 0, flags [DF], proto ICMP (1), length 84)
+                45.45.45.254 > 37.37.37.1: ICMP echo request, id 25, seq 4, length 64
+            13:50:22.492474 IP (tos 0x0, ttl 64, id 20265, offset 0, flags [none], proto ICMP (1), length 84)
+                37.37.37.1 > 45.45.45.254: ICMP echo reply, id 25, seq 4, length 64
+
+
+        Explication
+
+            1. Observation sur pc2 (172.16.2.1)
+
+                Sur pc2, je vois clairement les requêtes ICMP que j’envoie vers
+                pc-senart. Elles apparaissent avec : - Source : 172.16.2.1 - Destination
+                : 37.37.37.1
+
+                Exemples de lignes capturées : 172.16.2.1 > 37.37.37.1: ICMP echo
+                request, id 25, seq 1 172.16.2.1 > 37.37.37.1: ICMP echo request, id 25,
+                seq 2 172.16.2.1 > 37.37.37.1: ICMP echo request, id 25, seq 3
+
+                Les réponses ICMP que je reçois reviennent logiquement depuis pc-senart,
+                avec les adresses inversées : - Source : 37.37.37.1 - Destination :
+                172.16.2.1
+
+                Exemples : 37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 1
+                37.37.37.1 > 172.16.2.1: ICMP echo reply, id 25, seq 2 37.37.37.1 >
+                172.16.2.1: ICMP echo reply, id 25, seq 3
+
+            2.  Observation sur pc-senart (37.37.37.1):
+
+                Sur pc-senart, je remarque que les requêtes ICMP n’arrivent pas
+                directement depuis l’adresse de pc2. Au lieu de 172.16.2.1, je vois
+                l’adresse 45.45.45.254 comme source des paquets ICMP. Cela signifie que
+                le routeur situé juste avant pc-senart réutilise sa propre adresse IP
+                sur l’interface de sortie lorsqu’il transmet le paquet.
+
+                Exemples capturés sur pc-senart : 45.45.45.254 > 37.37.37.1: ICMP echo
+                request, id 25, seq 1 45.45.45.254 > 37.37.37.1: ICMP echo request, id
+                25, seq 2 45.45.45.254 > 37.37.37.1: ICMP echo request, id 25, seq 3
+
+                Les réponses ICMP repartent bien depuis pc-senart vers ce même routeur :
+                37.37.37.1 > 45.45.45.254: ICMP echo reply, id 25, seq 1 37.37.37.1 >
+                45.45.45.254: ICMP echo reply, id 25, seq 2 37.37.37.1 > 45.45.45.254:
+                ICMP echo reply, id 25, seq 3
+
+            3. conclusion :
+                Depuis pc2, je vois bien mes paquets ICMP avec mes adresses originales
+                (172.16.2.1 vers 37.37.37.1). Mais sur pc-senart, je ne vois pas
+                directement l’adresse IP de pc2 : je vois celle du dernier routeur,
+                45.45.45.254.
+
+                Cette différence est normale : dans ma topologie, le paquet ICMP
+                traverse plusieurs routeurs, et le routeur juste avant pc-senart utilise
+                son adresse source sur l’interface de sortie pour envoyer le paquet.
+                L’adresse IP originale n’est pas modifiée (il n’y a pas de NAT), mais
+                tcpdump affiche l’adresse IP de l’interface qui transmet réellement le
+                paquet à pc-senart.
+
+                Au final : - Les IP finales du ping restent les mêmes d’un bout à
+                l’autre (172.16.2.1 ↔ 37.37.37.1). - pc2 voit les adresses d’origine. -
+                pc-senart voit les adresses des routeurs intermédiaires sur le dernier
+                saut. - Les différences de TTL confirment le nombre de routeurs
+                traversés.
+
+                Cette analyse montre que le routage fonctionne correctement, et que les
+                routeurs réémettent les paquets ICMP avec leurs adresses propres sur
+                leurs interfaces de sortie.
+
+II.
+    
