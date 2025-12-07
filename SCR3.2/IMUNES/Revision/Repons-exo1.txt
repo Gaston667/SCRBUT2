@@ -1,0 +1,97 @@
+Sujet:
+    EXERCICE 1:
+
+        Un réseau unique :
+            DHCP : 192.168.10.10/24
+            Plage DHCP : 192.168.10.20–40
+
+            DNS : 1.1.1.1
+
+        Consigne :
+        Écris la configuration DHCP minimale permettant à PC1 d’obtenir automatiquement 
+        une IP, un masque correct, et un DNS. Aucune passerelle n’est fournie
+
+        Das le host1:
+
+        je fais un nano /etc/dhcp/dhcpd.conf et je pace ceci de dans
+        subnet 192.168.10.0 netmask 255.255.255.0 {
+        range 192.168.10.20 192.168.10.40;
+        option domain-name-servers 1.1.1.1;
+        }
+
+        et dans le fichier de demarage isc-dhcp-server
+        INTERFACESv4="eth0" le serveur ecoute et reste visible sur l'interface eth0
+
+        Pour lancer le serveur on passe par /etc/init.d/isc-dhcp-server start
+        parce que systemctl ne fonctionne pas sur imune
+
+        Pour demande au serveur une ip 
+        on se place dans le client et on tape dhclient eth0 
+        eth0 est l'interface qui est connecter au serveur 
+
+
+
+
+    EXERCICE 2:
+
+        Réseau : 10.0.0.0/24
+
+        DHCP : 10.0.0.10
+
+        Plage : 10.0.0.50–100
+
+        Passerelle : 10.0.0.1
+
+        DNS : interdit d’utiliser option routers passer par une option RFC.
+
+    Consigne :
+        Produis un fichier de configuration qui fournit 
+        IP + masque + DNS + route par défaut via une option RFC, pas via option routers.
+
+
+    # Déclaration de l’option 121 (nom choisi librement)
+    option banane code 121 = array of integer 8;
+
+    # Subnet 10.0.0.0/24
+    subnet 10.0.0.0 netmask 255.255.255.0 {
+        range 10.0.0.50 10.0.0.100;
+        option domain-name-servers 8.8.8.8;
+
+        # Route par défaut via 10.0.0.1 (RFC 3442)
+        option banane 0, 10,0,0,1;
+    }
+
+    EXERCICE3 :
+
+    Avec routeur pour servir de passerelle 
+
+    DHCP-Srv:
+        /etc/dchp/dhcpd.conf
+            
+            #Definisson l'option routers avec le code 121 pour defnir les route
+            option banana code 121 = array of integer 8;
+
+            subnet 10.1.0.0 netmask 255.255.255.0  {
+                range 10.1.0.50 10.1.0.200;
+                option banana 0,10,1,0,254;
+            }
+
+            subnet 10.2.0.0 netmask 255.255.255.0  {
+                range 10.2.0.50 10.2.0.200;
+                option banana 0,10,2,0,254;
+            }
+
+            subnet 10.3.0.0 netmask 255.255.255.0  {
+                range 10.3.0.50 10.3.0.200;
+                option banana 0,10,3,0,254;
+            }
+
+        dans les routeur je tape pour faire la redirection:
+        dhcrelay -i eth0 -i eth1 -i eth2 10.1.0.10
+
+
+
+
+
+
+
