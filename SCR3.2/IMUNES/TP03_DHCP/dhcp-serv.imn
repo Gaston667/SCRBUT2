@@ -4,9 +4,8 @@ node n0 {
 	hostname DHCPsrv
 	!
 	interface eth0
-	 ip address 10.0.0.10/24
-	 ipv6 address fc00::10/64
 	 mac address 42:00:aa:00:00:00
+	 ip address 192.168.10.10/20
 	!
 	interface lo0
 	 type lo
@@ -14,11 +13,11 @@ node n0 {
 	 ipv6 address ::1/128
 	!
     }
-    auto_default_routes enabled
     canvas c0
     iconcoords {120 144}
     labelcoords {120 180}
     interface-peer {eth0 n2}
+    custom-enabled true
 }
 
 node n1 {
@@ -44,8 +43,8 @@ node n1 {
     }
     auto_default_routes enabled
     canvas c0
-    iconcoords {432 192}
-    labelcoords {432 228}
+    iconcoords {432 96}
+    labelcoords {432 132}
     interface-peer {eth0 n2}
     interface-peer {eth1 n3}
 }
@@ -53,12 +52,12 @@ node n1 {
 node n2 {
     type lanswitch
     network-config {
-	hostname switch1
+	hostname S1
 	!
     }
     canvas c0
-    iconcoords {192 264}
-    labelcoords {192 287}
+    iconcoords {144 264}
+    labelcoords {144 287}
     interface-peer {e0 n0}
     interface-peer {e1 n1}
     interface-peer {e2 n4}
@@ -68,7 +67,7 @@ node n2 {
 node n3 {
     type lanswitch
     network-config {
-	hostname switch2
+	hostname S2
 	!
     }
     canvas c0
@@ -85,8 +84,6 @@ node n4 {
 	hostname pc1
 	!
 	interface eth0
-	 ip address 10.0.0.20/24
-	 ipv6 address fc00::20/64
 	 mac address 42:00:aa:00:00:02
 	!
 	interface lo0
@@ -97,8 +94,8 @@ node n4 {
     }
     auto_default_routes enabled
     canvas c0
-    iconcoords {240 504}
-    labelcoords {240 535}
+    iconcoords {96 432}
+    labelcoords {96 463}
     interface-peer {eth0 n2}
 }
 
@@ -120,8 +117,8 @@ node n5 {
     }
     auto_default_routes enabled
     canvas c0
-    iconcoords {432 480}
-    labelcoords {432 511}
+    iconcoords {360 360}
+    labelcoords {360 391}
     interface-peer {eth0 n2}
 }
 
@@ -221,6 +218,6 @@ option show {
     hostsAutoAssign no
     grid yes
     iconSize normal
-    zoom 1.0
+    zoom 1.5
 }
 
