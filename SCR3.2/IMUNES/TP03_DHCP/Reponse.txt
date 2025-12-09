@@ -1,0 +1,14 @@
+3.
+    option rfc3442-classless-static-routes code 121 = array of integer 8;
+
+    subnet 192.168.0.0 netmask 255.255.240.0 {
+        range 192.168.10.20 192.168.10.40;
+        option rfc3442-classless-static-routes 24,172,16,2,192,168,10,254;
+    }
+
+4. De base le dhcp.lease n'existe pas sur le serveur du coup je le cree 
+    commande: touch /var/lib/dhcd/dhcpd.leases
+
+
+II il faut rajouter une route au serveur vers le reseaux qui fais le brodcats
+

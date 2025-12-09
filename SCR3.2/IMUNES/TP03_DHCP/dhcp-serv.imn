@@ -14,10 +14,26 @@ node n0 {
 	!
     }
     canvas c0
-    iconcoords {120 144}
-    labelcoords {120 180}
+    iconcoords {120 72}
+    labelcoords {120 108}
     interface-peer {eth0 n2}
     custom-enabled true
+    custom-configs {
+        custom-config-id default {
+            custom-command /bin/sh
+            config {
+                ip addr add 127.0.0.1/8 dev lo0
+                ip addr add 192.168.10.10/20 dev eth0
+                ip -6 addr add ::1/128 dev lo0
+                
+                
+                rpcbind
+                inetd
+                
+            }
+        }
+    }
+    custom-selected default
 }
 
 node n1 {
@@ -26,14 +42,12 @@ node n1 {
 	hostname host2
 	!
 	interface eth1
-	 ip address 10.0.1.10/24
-	 ipv6 address fc00:1::10/64
 	 mac address 42:00:aa:00:00:06
+	 ip address 172.16.2.254/24
 	!
 	interface eth0
-	 ip address 10.0.0.11/24
-	 ipv6 address fc00::11/64
 	 mac address 42:00:aa:00:00:01
+	 ip address 192.168.10.254/20
 	!
 	interface lo0
 	 type lo
@@ -41,12 +55,29 @@ node n1 {
 	 ipv6 address ::1/128
 	!
     }
-    auto_default_routes enabled
     canvas c0
-    iconcoords {432 96}
-    labelcoords {432 132}
+    iconcoords {408 72}
+    labelcoords {408 108}
     interface-peer {eth0 n2}
     interface-peer {eth1 n3}
+    custom-configs {
+        custom-config-id default {
+            custom-command /bin/sh
+            config {
+                ip addr add 127.0.0.1/8 dev lo0
+                ip addr add 192.168.10.254/20 dev eth0
+                ip addr add 172.16.2.254/24 dev eth1
+                ip -6 addr add ::1/128 dev lo0
+                
+                
+                rpcbind
+                inetd
+                
+            }
+        }
+    }
+    custom-selected default
+    custom-enabled true
 }
 
 node n2 {
@@ -71,8 +102,8 @@ node n3 {
 	!
     }
     canvas c0
-    iconcoords {624 240}
-    labelcoords {624 263}
+    iconcoords {696 72}
+    labelcoords {696 95}
     interface-peer {e0 n6}
     interface-peer {e1 n7}
     interface-peer {e2 n1}
@@ -105,8 +136,6 @@ node n5 {
 	hostname pc2
 	!
 	interface eth0
-	 ip address 10.0.0.21/24
-	 ipv6 address fc00::21/64
 	 mac address 42:00:aa:00:00:03
 	!
 	interface lo0
@@ -128,8 +157,6 @@ node n6 {
 	hostname pc3
 	!
 	interface eth0
-	 ip address 10.0.1.20/24
-	 ipv6 address fc00:1::20/64
 	 mac address 42:00:aa:00:00:04
 	!
 	interface lo0
@@ -140,8 +167,8 @@ node n6 {
     }
     auto_default_routes enabled
     canvas c0
-    iconcoords {648 456}
-    labelcoords {648 487}
+    iconcoords {720 192}
+    labelcoords {720 223}
     interface-peer {eth0 n3}
 }
 
@@ -151,8 +178,6 @@ node n7 {
 	hostname pc4
 	!
 	interface eth0
-	 ip address 10.0.1.21/24
-	 ipv6 address fc00:1::21/64
 	 mac address 42:00:aa:00:00:05
 	!
 	interface lo0
@@ -163,8 +188,8 @@ node n7 {
     }
     auto_default_routes enabled
     canvas c0
-    iconcoords {744 432}
-    labelcoords {744 463}
+    iconcoords {864 72}
+    labelcoords {864 103}
     interface-peer {eth0 n3}
 }
 

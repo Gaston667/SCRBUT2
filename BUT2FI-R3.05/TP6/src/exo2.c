@@ -26,7 +26,7 @@ int main(int argc, const char *argv[]) {
         seg kouami;
         kouami.debut_segment = 0;
         kouami.fin_segment = atoi(argv[1]);
-        assert(pthread_create(&thread[i],NULL, thread, (void *) &kouami) == 0)
+        assert(pthread_create(&thread[i],NULL, thread, (void *) &kouami) == 0);
     }
     
 
