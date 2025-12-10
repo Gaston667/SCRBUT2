@@ -1,0 +1,27 @@
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "campus.local" {
+    type master;
+    file "/etc/bind/db.campus.local";
+    allow-transfer { 10.0.0.2; };   // Permet au DNS secondaire de recuprer >
+};
+
+
+
+
+
+// Dans le secondaire je fai ceci
+zone "campus.local" {
+    type slave;
+    masters { 10.0.0.1 };      # ← à toi de mettre l’IP correcte
+    file "/var/cache/bind/db.campus.local";           # ← à toi de choisir le bon chemin utilisé par Bind
+};
+
+
+

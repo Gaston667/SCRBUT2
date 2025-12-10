@@ -1,0 +1,17 @@
+
+$TTL 600
+@       IN      SOA     dns1.campus.local. admin.campus.local. (
+                        1
+                        3600
+                        1800
+                        604800
+                        600 )
+
+; Serveur DNS
+@       IN      NS      dns1.campus.local.
+dns1    IN      A       10.0.0.1
+
+; Enregistrements demandés
+dns2    IN      A       10.0.0.2
+srv     IN      A       10.0.0.50
+
