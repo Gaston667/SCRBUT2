@@ -1,0 +1,9 @@
+zone "mos" {
+    type master;
+    file "/etc/bind/db.mos";
+};
+
+zone "80.80.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.mos.inv";
+};

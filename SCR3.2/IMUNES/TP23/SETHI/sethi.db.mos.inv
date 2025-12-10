@@ -1,0 +1,16 @@
+$TTL 604800
+@ IN SOA sethi.mos. root.mos. (
+    2025052801
+    604800
+    86400
+    2419200
+    604800 )
+;
+@ IN NS sethi.mos.
+10.0 IN PTR kheops.mos.
+1.0 IN PTR host1.mos.
+2.0 IN PTR host2.mos.
+3.0 IN PTR host3.mos.
+4.0 IN PTR host4.mos.
+5.0 IN PTR host5.mos.
+20.0 IN PTR sethi.mos.

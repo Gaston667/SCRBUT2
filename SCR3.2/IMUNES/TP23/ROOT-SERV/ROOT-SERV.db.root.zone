@@ -1,0 +1,19 @@
+$TTL 604800
+@       IN  SOA ROOT-SERV. root. (
+            2025052101 ; Serial
+            604800     ; Refresh
+            86400      ; Retry
+            2419200    ; Expire
+            604800 )   ; Negative Cache TTL
+
+
+
+; Serveurs pour le domaine mos.
+@       IN  NS  ROOT-SERV.
+ROOT-SERV. IN A 90.90.0.10
+mos.    IN  NS  sethi.mos.
+mos.    IN  NS  kheops.mos.
+
+; Zone inverse
+80.80.in-addr.arpa. IN NS sethi.mos.
+80.80.in-addr.arpa. IN NS kheops.mos.

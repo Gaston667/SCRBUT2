@@ -1,0 +1,11 @@
+$TTL
+@   IN SOA osiris.tp.scr.    root.tp.scr. (
+            1
+            3600
+            1800
+            604800
+            600)
+
+@   IN  NS osiris.tp.scr.
+osiris IN A 192.168.1.158
+isis   IN A 192.168.1.10

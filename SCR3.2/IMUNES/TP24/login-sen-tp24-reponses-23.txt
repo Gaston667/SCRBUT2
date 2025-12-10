@@ -1,0 +1,52 @@
+→ Partie II : DHCP OPTIONS
+
+(Q) Le protocole DHCP utilise des options pour donner aux clients des infos reseau. Comment on les consulte ?
+(R) Tu fais : man dhcp-options
+
+Dans ce fichier t’as plein d’options toutes prêtes. Par exemple :
+   option routers 192.168.10.1;
+
+=> Cette ligne dit au client que sa passerelle c’est 192.168.10.1
+
+(Q) Chaque option a quoi comme infos ?
+(R) Un nom (ex : routers) et un code (ex : 3). Tu peux voir tous les codes officiels ici :
+   https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+
+(Q) Et si l’option existe pas dans le fichier de conf ?
+(R) Tu peux la creer toi-meme avec son nom et son code. C’est explique ici :
+   https://kb.isc.org/docs/isc-dhcp-41-manual-pages-dhcp-options
+
+Dans dhcpd.conf, tu rajoutes par exemple :
+   option rfc-3442-static-routes code 121 = array of unsigned integer 8;
+
+=> Ca permet d'utiliser une option qui est pas definie par defaut
+
+Autres docs utiles :
+- man dhcpd.conf  => pour voir comment ecrire les options
+- /etc/dhcp/dhcpd.conf  => c’est le fichier ou tu mets les options sur ta machine
+
+→ Partie III : OPTION POUR ROUTE CIDR
+
+(Q) C’est quoi le code et le RFC pour l’option route CIDR ?
+(R) L’option c’est le code 121, elle est definie dans la RFC 3442.
+Tu retrouves tout ici :
+   https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+
+(Q) Comment on declare cette option dans le fichier de conf ?
+(R) Tu mets ca dans dhcpd.conf :
+   option rfc-3442-static-routes code 121 = array of unsigned integer 8;
+
+(Q) Comment on utilise cette option ensuite ?
+(R) Tu rajoutes une ligne comme celle-ci :
+   option rfc-3442-static-routes 24, 192, 168, 20, 192, 168, 10, 1;
+
+Explication rapide :
+- 24 = le masque (CIDR /24)
+- 192.168.20 = reseau de destination
+- 192.168.10.1 = la passerelle
+
+Quand le client va prendre une IP par DHCP, il va recevoir cette route automatiquement.
+
+Autres docs utiles :
+- man dhcpd.leases  => pour voir ou sont stockees les infos de bail
+- man dhclient  => pour savoir comment les clients chopent les options DHCP

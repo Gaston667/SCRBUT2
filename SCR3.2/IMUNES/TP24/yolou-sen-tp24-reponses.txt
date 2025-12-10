@@ -1,0 +1,193 @@
+Partie II : Utilisation des options DHCP
+
+1) Le fichier de configuration '/etc/dhcp/dhcpd.conf' permet d’ajouter des options transmises aux clients via le protocole DHCP.
+
+Pour consulter les options disponibles, taper dans un terminal :
+
+   man dhcp-options
+
+Par exemple, dans la page 'man dhcp-option' :
+
+   option routers adresse ip [, adresse ip.. ];
+
+=> Cette ligne dit au client que sa passerelle voici cette adresse IP.
+
+2 et 3 ) Chaque option a un nom et un code numérique (ex. "routers" = code 3).
+
+Ou bien d'autre comme : option SUNW.server-address code 2 = ip-address;
+option SUNW.root-path code 4 = texte;
+
+
+Tous les codes sont listes dans le lien suivant :
+
+   https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+
+Si une option n'est pas définie de base, on peut la creer manuellement dans le fichier 'dhcpd.conf' :
+
+Dans cet emplacement ici : /etc/dhcp/dhcpd.conf  => c’est le fichier ou tu mets les options sur ta machine.
+
+
+   option rfc-3442-static-routes          code 121 = array of unsigned integer 8;
+   121   Classless Static Route Option N  Classless Static Route Option [RFC3442]
+
+Partie III : Route statique via DHCP
+
+On peut retrouver dans le TP qu'il demande de transmettre une route statique CIDR aux clients DHCP.
+
+Selon la documentation IANA :
+
+   - Le Code de l’option est : 121
+   - Et son RFC associée : RFC 3442
+
+D’apres le paragraphe "DEFINING NEW OPTIONS" sur le site de ISC :
+
+https://kb.isc.org/docs/isc-dhcp-41-manual-pages-dhcp-options
+
+Tout d'abord, on declare l’option dans le fichier :
+   option rfc-3442-static-routes code 121 = array of unsigned integer 8;
+
+Puis on definit la route CIDR avec :
+   option rfc-3442-static-routes 24, 192, 168, 20, 192, 168, 10, 1;
+
+   Explication : 
+
+- 24 = le masque (CIDR /24)
+- 192.168.20 = reseau de destination
+- 192.168.10.1 = la passerelle
+
+
+Ce qui signifie que la route 192.168.20.0/24 passe par la passerelle 192.168.10.1.
+
+Quand le client va prendre une IP par DHCP, il va recevoir cette route automatiquement.
+
+
+
+
+
+
+
+
+# dhcpd.conf
+#
+# Sample configuration file for ISC dhcpd
+#
+
+# option definitions common to all supported networks...
+option domain-name "example.org";
+option domain-name-servers ns1.example.org, ns2.example.org;
+option rfc-3442-classless-static-routes code 121 = array of unsigned integer 8;
+default-lease-time 600;
+max-lease-time 7200;
+
+# The ddns-updates-style parameter controls whether or not the server will
+# attempt to do a DNS update when a lease is confirmed. We default to the
+# behavior of the version 2 packages ('none', since DHCP v2 didn't
+# have support for DDNS.)
+ddns-update-style none;
+
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be uncommented.
+#authoritative;
+
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
+#log-facility local7;
+# No service will be given on this subnet, but declaring it helps the
+# DHCP server to understand the network topology.
+
+#subnet 10.152.187.0 netmask 255.255.255.0 {
+#}
+
+# This is a very basic subnet declaration.
+
+#subnet 10.254.239.0 netmask 255.255.255.224 {
+#  range 10.254.239.10 10.254.239.20;
+#  option routers rtr-239-0-1.example.org, rtr-239-0-2.example.org;
+#}
+
+# This declaration allows BOOTP clients to get dynamic addresses,
+#subnet 10.152.187.0 netmask 255.255.255.0 {
+#}
+
+# This is a very basic subnet declaration.
+
+#subnet 10.254.239.0 netmask 255.255.255.224 {
+#  range 10.254.239.10 10.254.239.20;
+#  option routers rtr-239-0-1.example.org, rtr-239-0-2.example.org;
+#}
+
+# This declaration allows BOOTP clients to get dynamic addresses,
+# which we don't really recommend.
+
+#subnet 10.254.239.32 netmask 255.255.255.224 {
+#  range dynamic-bootp 10.254.239.40 10.254.239.60;
+#  option broadcast-address 10.254.239.31;
+#  option routers rtr-239-32-1.example.org;
+#}
+
+# A slightly different configuration for an internal subnet.
+#subnet 10.5.5.0 netmask 255.255.255.224 {
+#  range 10.5.5.26 10.5.5.30;
+#  option domain-name-servers ns1.internal.example.org;
+#  option domain-name "internal.example.org";
+#  option routers 10.5.5.1;
+#  option broadcast-address 10.5.5.31;
+#  default-lease-time 600;
+#  max-lease-time 7200;
+#}
+
+# Hosts which require special configuration options can be listed in
+# host statements.   If no address is specified, the address will be
+# allocated dynamically (if possible), but the host-specific information
+# will still come from the host declaration.
+
+#host passacaglia {
+#  hardware ethernet 0:0:c0:5d:bd:95;
+#  filename "vmunix.passacaglia";
+#  server-name "toccata.example.com";
+# Fixed IP addresses can also be specified for hosts.   These addresses
+# should not also be listed as being available for dynamic assignment.
+# Hosts for which fixed IP addresses have been specified can boot using
+# BOOTP or DHCP.   Hosts for which no fixed address is specified can only
+# be booted with DHCP, unless there is an address range on the subnet
+# to which a BOOTP client is connected which has the dynamic-bootp flag
+# set.
+
+#host fantasia {
+#  hardware ethernet 08:00:07:26:c0:a5;
+#  fixed-address fantasia.example.com;
+#}
+# You can declare a class of clients and then do address allocation
+# based on that.   The example below shows a case where all clients
+# in a certain class get addresses on the 10.17.224/24 subnet, and all
+# other clients get addresses on the 10.0.29/24 subnet.
+
+#class "foo" {
+#  match if substring (option vendor-class-identifier, 0, 4) = "SUNW";
+#}
+
+#shared-network 224-29 {
+#  subnet 10.17.224.0 netmask 255.255.255.0 {
+#    option routers rtr-224.example.org;
+#  }
+#  subnet 10.0.29.0 netmask 255.255.255.0 {
+#    option routers rtr-29.example.org;
+#  }
+#  pool {
+#    allow members of "foo";
+#    range 10.17.224.10 10.17.224.250;
+#  }
+#  pool {
+#    deny members of "foo";
+#    range 10.0.29.10 10.0.29.230;
+#  }
+#}
+
+subnet 192.169.10.0 netmask 255.255.255.0 {
+range 192.168.10.20 192.168.10.40;
+option routes 192.168.10.1;
+option subnet-mask 255.255.255.0;
+option rfc-3442-classless-static-routes 24, 192, 168, 20, 192, 168, 10, 1;
+default-lease-time 600;
+max-lease-time 7200;
+}

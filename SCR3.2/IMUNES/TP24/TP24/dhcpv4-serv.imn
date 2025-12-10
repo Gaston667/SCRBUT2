@@ -1,0 +1,294 @@
+node n0 {
+    type host
+    network-config {
+	hostname DHCPsrv
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:03
+	 ip address 192.168.10.10/20
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+	!
+    }
+    canvas c0
+    iconcoords {144 168}
+    labelcoords {130 130}
+    interface-peer {eth0 n6}
+}
+
+node n1 {
+    type host
+    network-config {
+	hostname GW1
+	!
+	interface eth1
+	 mac address 42:00:aa:00:00:06
+	 ip address 172.16.2.254/24
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:02
+	 ip address 192.168.10.254/20
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    canvas c0
+    iconcoords {432 264}
+    labelcoords {427 222}
+    interface-peer {eth0 n6}
+    interface-peer {eth1 n7}
+    custom-configs {
+        custom-config-id default {
+            custom-command /bin/sh
+            config {
+                i
+            }
+        }
+    }
+    custom-selected default
+}
+
+node n2 {
+    type pc
+    network-config {
+	hostname pc1-1
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:00
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    canvas c0
+    iconcoords {96 480}
+    labelcoords {96 511}
+    interface-peer {eth0 n6}
+}
+
+node n3 {
+    type pc
+    network-config {
+	hostname pc1-2
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:01
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    canvas c0
+    iconcoords {288 480}
+    labelcoords {288 511}
+    interface-peer {eth0 n6}
+}
+
+node n4 {
+    type pc
+    network-config {
+	hostname pc2-1
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:04
+	 ip address 172.16.2.1/24
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    canvas c0
+    iconcoords {576 504}
+    labelcoords {576 535}
+    interface-peer {eth0 n7}
+}
+
+node n5 {
+    type pc
+    network-config {
+	hostname pc2-2
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:05
+	 ip address 172.16.2.2/24
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    canvas c0
+    iconcoords {792 504}
+    labelcoords {792 535}
+    interface-peer {eth0 n7}
+}
+
+node n6 {
+    type lanswitch
+    network-config {
+	hostname switch1
+	!
+    }
+    canvas c0
+    iconcoords {192 336}
+    labelcoords {136 318}
+    interface-peer {e0 n2}
+    interface-peer {e1 n3}
+    interface-peer {e2 n1}
+    interface-peer {e3 n0}
+    interface-peer {e4 n8}
+}
+
+node n7 {
+    type lanswitch
+    network-config {
+	hostname switch2
+	!
+    }
+    canvas c0
+    iconcoords {648 312}
+    labelcoords {704 287}
+    interface-peer {e0 n4}
+    interface-peer {e1 n5}
+    interface-peer {e2 n1}
+}
+
+node n8 {
+    type host
+    network-config {
+	hostname GW2
+	!
+	interface eth1
+	 mac address 42:00:aa:00:00:09
+	 ip address 163.63.63.253/22
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:07
+	 ip address 192.168.10.253/20
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+	!
+	!
+    }
+    canvas c0
+    iconcoords {432 96}
+    labelcoords {387 68}
+    interface-peer {eth0 n6}
+    interface-peer {eth1 n9}
+}
+
+node n9 {
+    type router
+    model quagga
+    network-config {
+	hostname router1
+	!
+	interface eth0
+	 mac address 42:00:aa:00:00:08
+	 ip address 163.63.63.254/22
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+	router rip
+	 redistribute static
+	 redistribute connected
+	 redistribute ospf
+	 network 0.0.0.0/0
+	!
+	router ripng
+	 redistribute static
+	 redistribute connected
+	 redistribute ospf6
+	 network ::/0
+	!
+    }
+    canvas c0
+    iconcoords {744 168}
+    labelcoords {744 193}
+    interface-peer {eth0 n8}
+}
+
+link l0 {
+    nodes {n2 n6}
+    bandwidth 0
+}
+
+link l1 {
+    nodes {n3 n6}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n1 n6}
+    bandwidth 0
+}
+
+link l3 {
+    nodes {n0 n6}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n7 n4}
+    bandwidth 0
+}
+
+link l5 {
+    nodes {n5 n7}
+    bandwidth 0
+}
+
+link l6 {
+    nodes {n7 n1}
+    bandwidth 0
+}
+
+link l7 {
+    nodes {n8 n6}
+    bandwidth 0
+}
+
+link l8 {
+    nodes {n9 n8}
+    bandwidth 0
+}
+
+canvas c0 {
+    name {Canvas0}
+}
+
+option show {
+    interface_names yes
+    ip_addresses yes
+    ipv6_addresses yes
+    node_labels yes
+    link_labels yes
+    background_images no
+    annotations yes
+    hostsAutoAssign no
+    grid yes
+    iconSize normal
+    zoom 1.0
+}
+

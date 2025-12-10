@@ -1,0 +1,11 @@
+zone "mos" {
+    type slave;
+    masters { 80.80.0.20; };  # IP de sethi
+    file "db.mos";
+};
+
+zone "80.80.in-addr.arpa" {
+    type slave;
+    masters { 80.80.0.20; };
+    file "db.mos.inv";
+};

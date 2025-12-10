@@ -1,0 +1,116 @@
+TP22-
+
+1/2/3
+
+normal:
+
+ GNU nano 2.7.4                   File: db.tp.scr                              
+
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     osiris.tp.scr. root.tp.scr. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      osiris.tp.scr.
+@       IN      A       192.168.1.158
+eno     IN      A       192.168.1.1
+owt     IN      A       192.168.1.2
+eerht   IN      A       192.168.1.3
+ruof    IN      A       192.168.1.4
+osiris  IN      A       192.168.1.158
+
+3/root@osiris:/etc/bind# named-checkzone tp.scr db.tp.scr
+zone tp.scr/IN: loaded serial 2
+OK
+
+
+
+
+inverse:
+
+ BIND data file for local loopback interface
+  GNU nano 2.7.4                 File: db.tp.scr.inv                            
+
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     osiris.tp.scr. root.tp.scr. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      osiris.tp.scr.
+@       IN      A       192.168.1.158
+1       IN      PTR     eno.tp.scr.
+2       IN      PTR     owt.tp.scr.   
+3       IN      PTR     eerht.tp.scr. 
+4       IN      PTR     ruof.tp.scr. 
+5       IN      PTR     osiris.tp.scr. 
+
+
+3/ root@osiris:/etc/bind# named-checkzone 1.168.192.in-addr.arpa  db.tp.scr.inv
+zone 1.168.192.in-addr.arpa/IN: loaded serial 2
+OK
+
+ 4/Selon les recommandations en commentaire dans le fichier named.conf, on place le fichier zone dans le named.conf.local.
+
+ 5/ GNU nano 2.7.4                File: named.conf.local                Modified  
+
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "tp.scr" {
+type master;
+file "/etc/bind/db.tp.scr";
+};
+
+zone "1.168.192.in-addr.arpa" {
+type master;
+file "etc/bind/db.tp.scr.inv";
+};
+
+6/ root@osiris:/etc/bind# named-checkconf named.conf.local
+
+7/root@osiris:/etc/bind# /etc/init.d/bind9 start
+Starting domain name service...: bind9.
+
+root@osiris:/etc/bind# ss -ltnu
+Netid  State      Recv-Q Send-Q Local Address:Port               Peer Address:Port              
+udp    UNCONN     0      0      192.168.1.1:53                    *:*                  
+udp    UNCONN     0      0      127.0.0.1:53                    *:*                  
+udp    UNCONN     0      0         *:111                   *:*                  
+udp    UNCONN     0      0         *:639                   *:*                  
+udp    UNCONN     0      0        :::53                   :::*                  
+udp    UNCONN     0      0        :::111                  :::*                  
+udp    UNCONN     0      0        :::639                  :::*                  
+tcp    LISTEN     0      128       *:111                   *:*                  
+tcp    LISTEN     0      10     192.168.1.1:53                    *:*                  
+tcp    LISTEN     0      128    127.0.0.1:953                   *:*                  
+tcp    LISTEN     0      10     127.0.0.1:53                    *:*                  
+tcp    LISTEN     0      128      :::111                  :::*                  
+tcp    LISTEN     0      10       :::53                   :::*                  
+tcp    LISTEN     0      128     ::1:953                  :::* 
+
+":::53" le port 53 est ouvert ducoup sa fonctionne.
+
+8/  GNU nano 2.7.4                File: /etc/resolv.conf                Modified  
+
+nameserver 192.168.1.158
+domain tp.scr
+=> dans imunes
+
+9/ping osiris

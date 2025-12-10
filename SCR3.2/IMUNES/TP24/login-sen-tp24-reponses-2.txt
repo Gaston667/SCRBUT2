@@ -1,0 +1,62 @@
+Partie II : Utilisation des options DHCP
+
+1) Le fichier de configuration '/etc/dhcp/dhcpd.conf' permet d’ajouter des options transmises aux clients via le protocole DHCP.
+
+Pour consulter les options disponibles, taper dans un terminal :
+
+   man dhcp-options
+
+Par exemple, dans la page 'man dhcp-option' :
+
+   option routers adresse ip [, adresse ip.. ];
+
+=> Cette ligne dit au client que sa passerelle voici cette adresse IP.
+
+2 et 3 ) Chaque option a un nom et un code numérique (ex. "routers" = code 3).
+
+Ou bien d'autre comme : option SUNW.server-address code 2 = ip-address;
+option SUNW.root-path code 4 = texte;
+
+
+Tous les codes sont listes dans le lien suivant :
+
+   https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+
+Si une option n'est pas définie de base, on peut la creer manuellement dans le fichier 'dhcpd.conf' :
+
+Dans cet emplacement ici : /etc/dhcp/dhcpd.conf  => c’est le fichier ou tu mets les options sur ta machine.
+
+
+   option rfc-3442-static-routes          code 121 = array of unsigned integer 8;
+   121   Classless Static Route Option N  Classless Static Route Option [RFC3442]
+
+Partie III : Route statique via DHCP
+
+On peut retrouver dans le TP qu'il demande de transmettre une route statique CIDR aux clients DHCP.
+
+Selon la documentation IANA :
+
+   - Le Code de l’option est : 121
+   - Et son RFC associée : RFC 3442
+
+D’apres le paragraphe "DEFINING NEW OPTIONS" sur le site de ISC :
+
+https://kb.isc.org/docs/isc-dhcp-41-manual-pages-dhcp-options
+
+Tout d'abord, on declare l’option dans le fichier :
+   option rfc-3442-static-routes code 121 = array of unsigned integer 8;
+
+Puis on definit la route CIDR avec :
+   option rfc-3442-static-routes 24, 192, 168, 20, 192, 168, 10, 1;
+
+   Explication : 
+
+- 24 = le masque (CIDR /24)
+- 192.168.20 = reseau de destination
+- 192.168.10.1 = la passerelle
+
+
+Ce qui signifie que la route 192.168.20.0/24 passe par la passerelle 192.168.10.1.
+
+Quand le client va prendre une IP par DHCP, il va recevoir cette route automatiquement.
+

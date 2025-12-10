@@ -1,0 +1,13 @@
+include "/etc/bind/ddns"
+zone "tp.scr" {
+    type master;
+    file "/var//bind/db.tp.scr";
+    allow-update { ; };  
+};
+
+zone "192.168.1.in-addr-arpa" {
+    type master;
+    file "/var/lib/bind/db.tp.scr.inv";
+    allow-update { "/etc/bind/ddns.key" };  
+};
+

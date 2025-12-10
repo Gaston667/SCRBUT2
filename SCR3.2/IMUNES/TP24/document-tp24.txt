@@ -1,0 +1,6 @@
+Etudier les paragrapes II et III du TP24.
+Mettre ce qui est attendu dans le fichier login-sen-tp24-reponses.txt
+La demarche suivie pas à pas doit être décrite
+Fichier saisi avec emacs ou vim ou : texte brut
+Mais pas de libreoffice, Note pad,
+La prof lira par : less <mon-fichier>

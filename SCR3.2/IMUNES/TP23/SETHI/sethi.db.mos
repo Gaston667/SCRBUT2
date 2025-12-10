@@ -1,0 +1,17 @@
+$TTL 604800
+@ IN SOA sethi.mos. root.mos. (
+    2025052801 ; Serial
+    604800
+    86400
+    2419200
+    604800 )
+;
+
+@     IN NS sethi.mos.
+sethi.mos. IN A 80.80.0.20
+kheops.mos. IN A 80.80.0.10
+host1.mos. IN A 80.80.0.1
+host2.mos. IN A 80.80.0.2
+host3.mos. IN A 80.80.0.3
+host4.mos. IN A 80.80.0.4
+host5.mos. IN A 80.80.0.5
